@@ -24,6 +24,9 @@ requirements:
     - {{ compiler('c') }}
     - make
 
+  run_constraints:
+    - pythia8 ==9999
+
 about:
   home: "https://pythia.org"
   license: "GPL-3.0"
