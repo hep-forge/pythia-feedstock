@@ -23,9 +23,9 @@ requirements:
     - {{ compiler('cxx') }}
     - {{ compiler('c') }}
     - make
-
-  run_constraints:
-    - pythia8 ==9999
+    
+  run_constrained:
+    - pythia8 <0
 
 about:
   home: "https://pythia.org"
