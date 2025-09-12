@@ -30,14 +30,10 @@ requirements:
     - {{ compiler('c') }}{{ gnu_pin }}
     - make
 
-  run:
-    - {{ stdlib("c") }}
-
   run_constrained:
     - pythia8 <0
 
 build:
-  # Let dependents float upward too (no max pin)
   run_exports:
     - libgcc-ng    >={{ _gnu_major }}           # [linux]
     - libstdcxx-ng >={{ _gnu_major }}           # [linux]
