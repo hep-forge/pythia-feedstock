@@ -30,21 +30,8 @@ requirements:
     - {{ compiler('c') }}{{ gnu_pin }}
     - make
 
-  host:
-    - libgcc-ng={{ gnu_pin }}                    # [linux]
-    - libstdcxx-ng={{ gnu_pin }}                 # [linux]
-    - libgfortran-ng={{ gnu_pin }}               # [linux]
-    - libgfortran5={{ gnu_pin }}                 # [linux]
-    - libgcc-devel_linux-64={{ gnu_pin }}        # [linux]
-    - libstdcxx-devel_linux-64={{ gnu_pin }}     # [linux]
-    - _openmp_mutex =*=*_gnu                    # [linux]
-    - libgomp                                   # [linux]
-
   run:
     - {{ stdlib("c") }}
-    - libgcc-ng      >={{ _gnu_major }}         # [linux]
-    - libstdcxx-ng   >={{ _gnu_major }}         # [linux]
-    - libgfortran5   >={{ _gnu_major }}         # [linux]
 
   run_constrained:
     - pythia8 <0
