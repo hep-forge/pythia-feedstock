@@ -31,12 +31,12 @@ requirements:
     - make
 
   host:
-    - libgcc-ng{{ gnu_pin }}                    # [linux]
-    - libstdcxx-ng{{ gnu_pin }}                 # [linux]
-    - libgfortran-ng{{ gnu_pin }}               # [linux]
-    - libgfortran5{{ gnu_pin }}                 # [linux]
-    - libgcc-devel_linux-64{{ gnu_pin }}        # [linux]
-    - libstdcxx-devel_linux-64{{ gnu_pin }}     # [linux]
+    - libgcc-ng={{ gnu_pin }}                    # [linux]
+    - libstdcxx-ng={{ gnu_pin }}                 # [linux]
+    - libgfortran-ng={{ gnu_pin }}               # [linux]
+    - libgfortran5={{ gnu_pin }}                 # [linux]
+    - libgcc-devel_linux-64={{ gnu_pin }}        # [linux]
+    - libstdcxx-devel_linux-64={{ gnu_pin }}     # [linux]
     - _openmp_mutex =*=*_gnu                    # [linux]
     - libgomp                                   # [linux]
 
