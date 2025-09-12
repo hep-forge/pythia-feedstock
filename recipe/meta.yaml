@@ -7,6 +7,12 @@
 {% set version = version or versions.keys()|first %}
 {% set version = version|string %}
 
+{% set gnu_min_versions = {
+      "8.3.12": "14"
+} %}
+{% set _gnu_major = gnu_min_versions.get(version, "") %}
+{% set gnu_pin    = (" " ~ _gnu_major ~ ".*") if _gnu_major else "" %}
+
 package:
   name: {{ environ.get('ANACONDA_PACKAGE', "pythia")|string|lower }}
   version: {{ environ.get('ANACONDA_VERSION', version)|replace("-", ".") }}
@@ -19,13 +25,36 @@ source:
 
 requirements:
   build:
-    - {{ compiler('gfortran') }}
-    - {{ compiler('cxx') }}
-    - {{ compiler('c') }}
+    - {{ compiler('gfortran') }}{{ gnu_pin }}
+    - {{ compiler('cxx') }}{{ gnu_pin }}
+    - {{ compiler('c') }}{{ gnu_pin }}
     - make
-    
+
+  host:
+    - libgcc-ng{{ gnu_pin }}                    # [linux]
+    - libstdcxx-ng{{ gnu_pin }}                 # [linux]
+    - libgfortran-ng{{ gnu_pin }}               # [linux]
+    - libgfortran5{{ gnu_pin }}                 # [linux]
+    - libgcc-devel_linux-64{{ gnu_pin }}        # [linux]
+    - libstdcxx-devel_linux-64{{ gnu_pin }}     # [linux]
+    - _openmp_mutex =*=*_gnu                    # [linux]
+    - libgomp                                   # [linux]
+
+  run:
+    - {{ stdlib("c") }}
+    - libgcc-ng      >={{ _gnu_major }}         # [linux]
+    - libstdcxx-ng   >={{ _gnu_major }}         # [linux]
+    - libgfortran5   >={{ _gnu_major }}         # [linux]
+
   run_constrained:
     - pythia8 <0
+
+build:
+  # Let dependents float upward too (no max pin)
+  run_exports:
+    - libgcc-ng    >={{ _gnu_major }}           # [linux]
+    - libstdcxx-ng >={{ _gnu_major }}           # [linux]
+    - libgfortran5 >={{ _gnu_major }}           # [linux]
 
 about:
   home: "https://pythia.org"
