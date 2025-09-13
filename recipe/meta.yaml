@@ -28,6 +28,7 @@ requirements:
     - {{ compiler('gfortran') }}{{ gnu_pin }}
     - {{ compiler('cxx') }}{{ gnu_pin }}
     - {{ compiler('c') }}{{ gnu_pin }}
+    - libstdcxx={{ gnu_pin }}
     - make
 
   host:
