@@ -30,14 +30,25 @@ requirements:
     - {{ compiler('c') }}{{ gnu_pin }}
     - make
 
+  host:
+    - libgfortran={{ gnu_pin }}
+    - libgfortran5={{ gnu_pin }}
+    - libstdcxx={{ gnu_pin }}
+    - libgomp={{ gnu_pin }}
+    - libgcc={{ gnu_pin }}
+
   run_constrained:
     - pythia8 <0
 
 build:
   run_exports:
+    - libgcc       >={{ _gnu_major }}           # [linux]
     - libgcc-ng    >={{ _gnu_major }}           # [linux]
     - libstdcxx-ng >={{ _gnu_major }}           # [linux]
+    - libgfortran  >={{ _gnu_major }}           # [linux]
     - libgfortran5 >={{ _gnu_major }}           # [linux]
+    - libstdcxx    >={{ _gnu_major }}           # [linux]
+    - libgomp      >={{ _gnu_major }}           # [linux]
 
 about:
   home: "https://pythia.org"
