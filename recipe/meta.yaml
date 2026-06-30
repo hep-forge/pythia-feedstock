@@ -43,6 +43,7 @@ requirements:
 
 build:
   run_exports:
+    - {{ pin_subpackage(name, max_pin="x.x.x") }}
     - libgcc       >={{ _gnu_major }}           # [linux]
     - libgcc-ng    >={{ _gnu_major }}           # [linux]
     - libstdcxx-ng >={{ _gnu_major }}           # [linux]
