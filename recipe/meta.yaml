@@ -1,61 +1,38 @@
 {% set versions = {
-    "8.3.12": "c1a33aa5fa15e6b70d7946ce6d237246842887ec84ea0b35dfc2535c868a2770"
+    "6.4.28": "b06f266e03f7482ecebffd418633dedec8aa25b8772ae19e038b754d7d33ba99"
 } %}
-
 
 {% set version = environ.get('COMMIT_VERSION', None) %}
 {% set version = version or versions.keys()|first %}
 {% set version = version|string %}
-
-{% set gnu_min_versions = {
-      "8.3.12": "14"
-} %}
-{% set _gnu_major = gnu_min_versions.get(version, "") %}
-{% set gnu_pin    = (" " ~ _gnu_major ~ ".*") if _gnu_major else "" %}
 
 package:
   name: {{ environ.get('ANACONDA_PACKAGE', "pythia")|string|lower }}
   version: {{ environ.get('ANACONDA_VERSION', version)|replace("-", ".") }}
 
 source:
-  url: "https://gitlab.com/Pythia8/releases/-/archive/pythia8312/releases-pythia{{ version|replace(".", "") }}.tar.gz"
+  # PYTHIA 6 ships as a single monolithic Fortran source file -- no
+  # tarball, no build system of its own. Frozen at 6.4.28 since 2013;
+  # development moved to PYTHIA 8 (see main/8.x branches of this feedstock).
+  url: "https://pythia.org/download/pythia6/pythia{{ version|replace('.', '') }}.f"
   {% if versions.get(version, None) %}
   sha256: {{ versions.get(version) }}
   {% endif %}
 
+build:
+  number: 0
+  run_exports:
+    - {{ pin_subpackage(name, max_pin="x.x") }}
+
 requirements:
   build:
-    - {{ compiler('gfortran') }}{{ gnu_pin }}
-    - {{ compiler('cxx') }}{{ gnu_pin }}
-    - {{ compiler('c') }}{{ gnu_pin }}
-    - libstdcxx={{ gnu_pin }}
+    - {{ compiler('fortran') }}
     - make
-
-  host:
-    - libgfortran={{ gnu_pin }}
-    - libgfortran5={{ gnu_pin }}
-    - libstdcxx={{ gnu_pin }}
-    - libgomp={{ gnu_pin }}
-    - libgcc={{ gnu_pin }}
-
-  run_constrained:
-    - pythia8 <0
-
-build:
-  run_exports:
-    - {{ pin_subpackage(name, max_pin="x.x.x") }}
-    - libgcc       >={{ _gnu_major }}           # [linux]
-    - libgcc-ng    >={{ _gnu_major }}           # [linux]
-    - libstdcxx-ng >={{ _gnu_major }}           # [linux]
-    - libgfortran  >={{ _gnu_major }}           # [linux]
-    - libgfortran5 >={{ _gnu_major }}           # [linux]
-    - libstdcxx    >={{ _gnu_major }}           # [linux]
-    - libgomp      >={{ _gnu_major }}           # [linux]
 
 about:
   home: "https://pythia.org"
-  license: "GPL-3.0"
-  summary: "PYTHIA is a program for the generation of high-energy physics collision events, i.e. for the description of collisions at high energies between electrons, protons, photons and heavy nuclei."
+  license: "GPL-2.0-or-later"
+  summary: "PYTHIA 6.4 -- legacy Fortran Monte Carlo event generator (frozen since 2013, superseded by PYTHIA 8)"
 
 extra:
   recipe-maintainers:
