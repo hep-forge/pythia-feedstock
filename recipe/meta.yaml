@@ -13,8 +13,10 @@
 {% set _gnu_major = gnu_min_versions.get(version, "") %}
 {% set gnu_pin    = (" " ~ _gnu_major ~ ".*") if _gnu_major else "" %}
 
+{% set name = environ.get('ANACONDA_PACKAGE', "pythia")|string|lower %}
+
 package:
-  name: {{ environ.get('ANACONDA_PACKAGE', "pythia")|string|lower }}
+  name: {{ name }}
   version: {{ environ.get('ANACONDA_VERSION', version)|replace("-", ".") }}
 
 source:
