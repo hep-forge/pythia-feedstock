@@ -16,7 +16,7 @@ PYTHIA is a program for the generation of high-energy physics collision events, 
 | Architecture | Latest published |
 |--------------|------------------|
 | linux-amd64 (`linux-64`) | ✅ `8.3.12` |
-| linux-arm64 (`linux-aarch64`) | ❌ not published |
+| linux-arm64 (`linux-aarch64`) | ✅ `8.3.12` |
 
 _As of the last feedstock render; the badges above are live._
 
