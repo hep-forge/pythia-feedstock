@@ -7,11 +7,3 @@ c_compiler:            # [linux]
   - gcc
 cxx_compiler:          # [linux]
   - gxx
-c_compiler_version:    # [linux]
-  - 14
-cxx_compiler_version:  # [linux]
-  - 14
-libgcc_version:        # [linux]
-  - 14.*
-libstdcxx_version:     # [linux]
-  - 14.*
