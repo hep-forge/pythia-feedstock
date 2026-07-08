@@ -30,6 +30,7 @@ requirements:
     - {{ compiler('gfortran') }}{{ gnu_pin }}
     - {{ compiler('cxx') }}{{ gnu_pin }}
     - {{ compiler('c') }}{{ gnu_pin }}
+    - {{ stdlib('c') }}
     - libstdcxx={{ gnu_pin }}
     - make
     - gnuconfig
