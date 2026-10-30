@@ -27,7 +27,7 @@ source:
 
 requirements:
   build:
-    - {{ compiler('gfortran') }}{{ gnu_pin }}
+    - {{ compiler('fortran') }}{{ gnu_pin }}
     - {{ compiler('cxx') }}{{ gnu_pin }}
     - {{ compiler('c') }}{{ gnu_pin }}
     - {{ stdlib('c') }}
