@@ -10,7 +10,7 @@
 {% set gnu_min_versions = {
       "8.3.12": "14"
 } %}
-{% set _gnu_major = gnu_min_versions.get(version, "") %}
+{% set _gnu_major = gnu_min_versions.get(version, "") if linux else "" %}
 {% set gnu_pin    = (" " ~ _gnu_major ~ ".*") if _gnu_major else "" %}
 
 {% set name = environ.get('ANACONDA_PACKAGE', "pythia")|string|lower %}
@@ -31,16 +31,16 @@ requirements:
     - {{ compiler('cxx') }}{{ gnu_pin }}
     - {{ compiler('c') }}{{ gnu_pin }}
     - {{ stdlib('c') }}
-    - libstdcxx={{ gnu_pin }}
+    - libstdcxx={{ gnu_pin }}   # [linux]
     - make
     - gnuconfig
 
   host:
-    - libgfortran={{ gnu_pin }}
-    - libgfortran5={{ gnu_pin }}
-    - libstdcxx={{ gnu_pin }}
-    - libgomp={{ gnu_pin }}
-    - libgcc={{ gnu_pin }}
+    - libgfortran={{ gnu_pin }}    # [linux]
+    - libgfortran5={{ gnu_pin }}   # [linux]
+    - libstdcxx={{ gnu_pin }}      # [linux]
+    - libgomp={{ gnu_pin }}        # [linux]
+    - libgcc={{ gnu_pin }}         # [linux]
 
   run_constrained:
     - pythia8 <0
