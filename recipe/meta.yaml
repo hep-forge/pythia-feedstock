@@ -27,20 +27,23 @@ source:
 
 requirements:
   build:
-    - {{ compiler('fortran') }}{{ gnu_pin }}
-    - {{ compiler('cxx') }}{{ gnu_pin }}
-    - {{ compiler('c') }}{{ gnu_pin }}
+    # the GCC 14 floor comes from conda_build_config.yaml; appending gnu_pin
+    # here as well rendered "gxx_linux-aarch64 14.* 14.*", the second 14.*
+    # read as a build string that no compiler package has
+    - {{ compiler('fortran') }}
+    - {{ compiler('cxx') }}
+    - {{ compiler('c') }}
     - {{ stdlib('c') }}
-    - libstdcxx={{ gnu_pin }}   # [linux]
+    - libstdcxx{{ gnu_pin }}   # [linux]
     - make
     - gnuconfig
 
   host:
-    - libgfortran={{ gnu_pin }}    # [linux]
-    - libgfortran5={{ gnu_pin }}   # [linux]
-    - libstdcxx={{ gnu_pin }}      # [linux]
-    - libgomp={{ gnu_pin }}        # [linux]
-    - libgcc={{ gnu_pin }}         # [linux]
+    - libgfortran{{ gnu_pin }}    # [linux]
+    - libgfortran5{{ gnu_pin }}   # [linux]
+    - libstdcxx{{ gnu_pin }}      # [linux]
+    - libgomp{{ gnu_pin }}        # [linux]
+    - libgcc{{ gnu_pin }}         # [linux]
 
   run_constrained:
     - pythia8 <0
