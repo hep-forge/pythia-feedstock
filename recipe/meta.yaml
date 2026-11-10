@@ -2,16 +2,16 @@
     "8.3.12": "c1a33aa5fa15e6b70d7946ce6d237246842887ec84ea0b35dfc2535c868a2770"
 } %}
 
-
 {% set version = environ.get('COMMIT_VERSION', None) %}
 {% set version = version or versions.keys()|first %}
 {% set version = version|string %}
 
-{% set gnu_min_versions = {
-      "8.3.12": "14"
-} %}
-{% set _gnu_major = gnu_min_versions.get(version, "") if linux else "" %}
-{% set gnu_pin    = (" " ~ _gnu_major ~ ".*") if _gnu_major else "" %}
+# PYTHIA 8 comes from conda-forge's pythia8. This package only points
+# "pythia" at it, so recipes and users can keep asking for "pythia":
+# major 8 here (main label), major 6 is still compiled on the legacy branch.
+# conda-forge spells 8.3.12 as 8.312.
+{% set _v = version.split('.') %}
+{% set cf_version = _v[0] ~ '.' ~ _v[1] ~ '%02d'|format(_v[2]|int) %}
 
 {% set name = environ.get('ANACONDA_PACKAGE', "pythia")|string|lower %}
 
@@ -19,50 +19,31 @@ package:
   name: {{ name }}
   version: {{ environ.get('ANACONDA_VERSION', version)|replace("-", ".") }}
 
-source:
-  url: "https://gitlab.com/Pythia8/releases/-/archive/pythia8312/releases-pythia{{ version|replace(".", "") }}.tar.gz"
-  {% if versions.get(version, None) %}
-  sha256: {{ versions.get(version) }}
-  {% endif %}
+build:
+  number: 1   # above the compiled 8.3.12 build 0 still on the channel
+  noarch: generic
+  # Consumers link conda-forge's libpythia8; give them its own pin.
+  run_exports:
+    - pythia8 >={{ cf_version }},<8.400.0a0
 
 requirements:
-  build:
-    # the GCC 14 floor comes from conda_build_config.yaml; appending gnu_pin
-    # here as well rendered "gxx_linux-aarch64 14.* 14.*", the second 14.*
-    # read as a build string that no compiler package has
-    - {{ compiler('fortran') }}
-    - {{ compiler('cxx') }}
-    - {{ compiler('c') }}
-    - {{ stdlib('c') }}
-    - libstdcxx{{ gnu_pin }}   # [linux]
-    - make
-    - gnuconfig
+  run:
+    - pythia8 {{ cf_version }}.*
 
-  host:
-    - libgfortran{{ gnu_pin }}    # [linux]
-    - libgfortran5{{ gnu_pin }}   # [linux]
-    - libstdcxx{{ gnu_pin }}      # [linux]
-    - libgomp{{ gnu_pin }}        # [linux]
-    - libgcc{{ gnu_pin }}         # [linux]
-
-  run_constrained:
-    - pythia8 <0
-
-build:
-  run_exports:
-    - {{ pin_subpackage(name, max_pin="x.x.x") }}
-    - libgcc       >={{ _gnu_major }}           # [linux]
-    - libgcc-ng    >={{ _gnu_major }}           # [linux]
-    - libstdcxx-ng >={{ _gnu_major }}           # [linux]
-    - libgfortran  >={{ _gnu_major }}           # [linux]
-    - libgfortran5 >={{ _gnu_major }}           # [linux]
-    - libstdcxx    >={{ _gnu_major }}           # [linux]
-    - libgomp      >={{ _gnu_major }}           # [linux]
+test:
+  commands:
+    - pythia8-config --version
+    - test "$(pythia8-config --version)" = "{{ cf_version }}"
 
 about:
   home: "https://pythia.org"
-  license: "GPL-3.0"
-  summary: "PYTHIA is a program for the generation of high-energy physics collision events, i.e. for the description of collisions at high energies between electrons, protons, photons and heavy nuclei."
+  license: "GPL-3.0-or-later"
+  summary: "PYTHIA 8 event generator, from conda-forge's pythia8 (major 6 is on the legacy label)"
+  description: |
+    hep-forge no longer compiles PYTHIA 8. This package installs
+    conda-forge's pythia8 of the same version, which is also the build
+    conda-forge's ROOT links. PYTHIA 6 is still built here, on the legacy
+    branch/label.
 
 extra:
   recipe-maintainers:
