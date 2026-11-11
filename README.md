@@ -9,7 +9,7 @@ Feedstock for [pythia](https://pythia.org) — part of [hep-forge](https://anaco
 Builds linux-amd64 + linux-arm64 in one matrix workflow and uploads to the
 [hep-forge](https://anaconda.org/hep-forge) Anaconda channel.
 
-PYTHIA is a program for the generation of high-energy physics collision events, i.e. for the description of collisions at high energies between electrons, protons, photons and heavy nuclei.
+PYTHIA 8 event generator, from conda-forge's pythia8 (major 6 is on the legacy label)
 
 ## Architectures
 
