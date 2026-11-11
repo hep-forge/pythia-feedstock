@@ -1,15 +1,19 @@
 {% set versions = {
-    "8.3.12": "c1a33aa5fa15e6b70d7946ce6d237246842887ec84ea0b35dfc2535c868a2770"
+    "8.3.12": "",
+    "6.4.28": "b06f266e03f7482ecebffd418633dedec8aa25b8772ae19e038b754d7d33ba99"
 } %}
 
 {% set version = environ.get('COMMIT_VERSION', None) %}
 {% set version = version or versions.keys()|first %}
 {% set version = version|string %}
 
-# PYTHIA 8 comes from conda-forge's pythia8. This package only points
-# "pythia" at it, so recipes and users can keep asking for "pythia":
-# major 8 here (main label), major 6 is compiled on the pythia6 branch/label.
-# conda-forge spells 8.3.12 as 8.312.
+# One "pythia" on the main label, the major chosen by version:
+#   conda install -c hep-forge pythia          -> PYTHIA 8 (conda-forge's pythia8)
+#   conda install -c hep-forge "pythia<8"      -> PYTHIA 6 (compiled here)
+# Major 8 only points at conda-forge's pythia8 of the same version (8.3.12 is
+# conda-forge's 8.312), the build conda-forge's ROOT links. conda-forge has
+# no PYTHIA 6, so 6.x is compiled from the single Fortran source.
+{% set major = version.split('.')[0]|int %}
 {% set _v = version.split('.') %}
 {% set cf_version = _v[0] ~ '.' ~ _v[1] ~ '%02d'|format(_v[2]|int) %}
 
@@ -19,32 +23,63 @@ package:
   name: {{ name }}
   version: {{ environ.get('ANACONDA_VERSION', version)|replace("-", ".") }}
 
+{% if major < 8 %}
+source:
+  # PYTHIA 6 ships as one Fortran file, no tarball, no build system; frozen
+  # at 6.4.28 since 2013.
+  url: "https://pythia.org/download/pythia6/pythia{{ version|replace('.', '') }}.f"
+  sha256: {{ versions.get(version) }}
+{% endif %}
+
 build:
+{% if major < 8 %}
+  number: 0
+  script: bash "${RECIPE_DIR}/build_pythia6.sh"
+  run_exports:
+    - {{ pin_subpackage(name, max_pin="x.x") }}
+{% else %}
   number: 1   # above the compiled 8.3.12 build 0 still on the channel
   noarch: generic
   # Consumers link conda-forge's libpythia8; give them its own pin.
   run_exports:
     - pythia8 >={{ cf_version }},<8.400.0a0
+{% endif %}
 
 requirements:
+{% if major < 8 %}
+  build:
+    - {{ compiler('fortran') }}
+    - {{ stdlib('c') }}
+    - make
+{% else %}
   run:
     - pythia8 {{ cf_version }}.*
+{% endif %}
 
 test:
   commands:
+{% if major < 8 %}
+    - test -f "${PREFIX}/lib/libpythia6${SHLIB_EXT}"
+    - test -f "${PREFIX}/include/pythia6/pythia{{ version|replace('.', '') }}.f"
+{% else %}
     - pythia8-config --version
     - test "$(pythia8-config --version)" = "{{ cf_version }}"
+{% endif %}
 
 about:
   home: "https://pythia.org"
-  license: "GPL-3.0-or-later"
-  summary: "PYTHIA 8 event generator, from conda-forge's pythia8 (major 6 is on the pythia6 label)"
+  license: "GPL-2.0-or-later"
+  summary: "PYTHIA event generator: 8.x from conda-forge's pythia8, 6.x compiled (pythia<8)"
   description: |
-    hep-forge no longer compiles PYTHIA 8. This package installs
-    conda-forge's pythia8 of the same version, which is also the build
-    conda-forge's ROOT links. PYTHIA 6 is still built here, on the pythia6
-    branch/label: conda install -c hep-forge/label/pythia6 pythia
+    One package for both lines on the main label, chosen by version:
+    "pythia" installs PYTHIA 8 (conda-forge's pythia8 of the same version,
+    which is also what conda-forge's ROOT links); "pythia<8" installs
+    PYTHIA 6.4.28, the legacy Fortran generator, compiled here.
 
 extra:
+  # keep PYTHIA 6 through the newest-2-versions trim
+  lts:
+    main:
+      - "6.4.28"
   recipe-maintainers:
     - meiyasan

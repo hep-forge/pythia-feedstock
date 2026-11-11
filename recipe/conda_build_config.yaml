@@ -1,2 +1,7 @@
-# Nothing is compiled here: "pythia" (major 8) is a pointer to conda-forge's
-# pythia8, see meta.yaml.
+# Used by PYTHIA 6 only (compiled); PYTHIA 8 points at conda-forge's pythia8.
+c_stdlib:
+  - sysroot                    # [linux]
+  - macosx_deployment_target   # [osx]
+c_stdlib_version:              # [unix]
+  - 2.17                       # [linux]
+  - 11.0                       # [osx]
