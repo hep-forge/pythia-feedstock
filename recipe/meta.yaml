@@ -8,7 +8,7 @@
 
 # PYTHIA 8 comes from conda-forge's pythia8. This package only points
 # "pythia" at it, so recipes and users can keep asking for "pythia":
-# major 8 here (main label), major 6 is still compiled on the legacy branch.
+# major 8 here (main label), major 6 is compiled on the pythia6 branch/label.
 # conda-forge spells 8.3.12 as 8.312.
 {% set _v = version.split('.') %}
 {% set cf_version = _v[0] ~ '.' ~ _v[1] ~ '%02d'|format(_v[2]|int) %}
@@ -38,12 +38,12 @@ test:
 about:
   home: "https://pythia.org"
   license: "GPL-3.0-or-later"
-  summary: "PYTHIA 8 event generator, from conda-forge's pythia8 (major 6 is on the legacy label)"
+  summary: "PYTHIA 8 event generator, from conda-forge's pythia8 (major 6 is on the pythia6 label)"
   description: |
     hep-forge no longer compiles PYTHIA 8. This package installs
     conda-forge's pythia8 of the same version, which is also the build
-    conda-forge's ROOT links. PYTHIA 6 is still built here, on the legacy
-    branch/label.
+    conda-forge's ROOT links. PYTHIA 6 is still built here, on the pythia6
+    branch/label: conda install -c hep-forge/label/pythia6 pythia
 
 extra:
   recipe-maintainers:
