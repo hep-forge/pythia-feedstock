@@ -9,14 +9,14 @@ Feedstock for [pythia](https://pythia.org) — part of [hep-forge](https://anaco
 Builds linux-amd64 + linux-arm64 in one matrix workflow and uploads to the
 [hep-forge](https://anaconda.org/hep-forge) Anaconda channel.
 
-PYTHIA 8 event generator, from conda-forge's pythia8 (major 6 is on the pythia6 label)
+PYTHIA event generator: 8.x from conda-forge's pythia8, 6.x compiled (pythia<8)
 
 ## Architectures
 
 | Architecture | Latest published |
 |--------------|------------------|
-| linux-amd64 (`linux-64`) | ❌ not published |
-| linux-arm64 (`linux-aarch64`) | ❌ not published |
+| linux-amd64 (`linux-64`) | ✅ `8.3.12` |
+| linux-arm64 (`linux-aarch64`) | ✅ `8.3.12` |
 
 _As of the last feedstock render; the badges above are live._
 
